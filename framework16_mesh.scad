@@ -4,7 +4,8 @@
 // Thickness of the walls that make up the clamps.
 clamp_thickness = 3;
 // Width of one part.
-width = 17;
+// TODO measure this.
+width = 20;
 
 // This is the big clamp, gripping the back 
 // of the laptop. It's the main mechanism
@@ -43,5 +44,21 @@ module small_bottom_ridge_clamp() {
     }
 }
 
-translate([0, 0, ridge_clamp_height]) big_back_clamp();
-small_bottom_ridge_clamp();
+mesh_depth = 90;
+mesh_height = 2 + ridge_clamp_height;
+mesh_thickness = 3;
+module mesh() {
+    intersection() { 
+        translate([0, 0, -1]) rotate([6, 0, 0]) cube([width, mesh_depth * 3, mesh_thickness]);
+        difference() {
+            cube([width, mesh_depth, mesh_height]);
+            translate([width/4, mesh_depth*0.3, 0]) cube([width/2, mesh_depth/2, mesh_height]);
+        }
+    };
+}
+
+translate([0, 0, mesh_height - ridge_clamp_height]) {
+    translate([0, 0, ridge_clamp_height]) big_back_clamp();
+    small_bottom_ridge_clamp();
+}
+mesh();
