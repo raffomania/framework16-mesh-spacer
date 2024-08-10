@@ -1,21 +1,47 @@
-back_gap = 18.268;
+
+// In general, width = X axis, depth = Y axis, height = Z axis
+
+// Thickness of the walls that make up the clamps.
 clamp_thickness = 3;
+// Width of one part.
 width = 17;
-back_clamp_depth = back_gap + clamp_thickness;
 
-difference() {
-    cube([width, back_clamp_depth, 12.363]);
-    translate([-1, clamp_thickness, clamp_thickness]) cube([width+2, back_gap+1, 20]);
+// This is the big clamp, gripping the back 
+// of the laptop. It's the main mechanism
+// keeping the attachment in place at the moment.
+
+// Height of the gap in the big back clamp.
+back_clamp_height = 18.268;
+// Height of the back clamp including walls.
+back_clamp_outer_height = back_clamp_height + clamp_thickness;
+
+module big_back_clamp() {
+    difference() {
+        cube([width, 12.363, back_clamp_outer_height]);
+        translate([-1, clamp_thickness, 0]) cube([width+2, 20, back_clamp_height]);
+    }
 }
 
-ridge_upper_height = 5.126;
-ridge_lower_height = 4;
+// This is the small clamp, gripping the little
+// ridge at the bottom of the laptop.
+
+// Dimensions of the ridge on the laptop.
+ridge_upper_depth = 5.026;
+ridge_lower_depth = 4;
+
 // add 0.6 to compensate for reduced back gap
-ridge_depth = 4.503+0.6;
-ridge_z_start = 16.901;
-ridge_clamp_height = 23.739;
-ridge_clamp_depth = ridge_depth + clamp_thickness;
-difference() {
-    translate([0, back_clamp_depth, 0]) cube([width, ridge_clamp_depth, ridge_clamp_height]);
-    translate([0, back_clamp_depth, ridge_z_start]) cube([width, ridge_depth, ridge_upper_height]);
+ridge_height = 4.503 + 0.6;
+ridge_y_start = 17;
+ridge_clamp_depth = 23.739;
+ridge_clamp_height = ridge_height + clamp_thickness;
+
+module small_bottom_ridge_clamp() {
+    difference() {
+        cube([width, ridge_clamp_depth, ridge_clamp_height]);
+        translate([0, ridge_y_start, ridge_clamp_height - ridge_height]) cube([width, ridge_upper_depth, ridge_height]);
+        translate([0, ridge_y_start + ridge_upper_depth, ridge_clamp_height - 0.5]) cube([width, 2, 0.5]);
+    }
 }
+
+translate([0, 0, ridge_clamp_height]) big_back_clamp();
+small_bottom_ridge_clamp();
