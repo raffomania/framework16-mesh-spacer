@@ -44,17 +44,43 @@ module small_bottom_ridge_clamp() {
     }
 }
 
-mesh_depth = 90;
-mesh_height = 2 + ridge_clamp_height;
+mesh_cutout_size = 6;
+mesh_cutout_gap = 10;
+module mesh_cutouts() {
+    for (x=[0:0]) {
+        for (y=[0:2]) {
+translate([(mesh_cutout_size + mesh_cutout_gap) * x, (mesh_cutout_size + mesh_cutout_gap) * y, 0])         rotate([0, 0, 45]) cube([mesh_cutout_size, mesh_cutout_size, mesh_height]);
+        }
+    }
+    for (x=[0:0]) {
+        for (y=[0:2]) {
+translate([mesh_cutout_size + (mesh_cutout_size + mesh_cutout_gap) * x, mesh_cutout_size + (mesh_cutout_size + mesh_cutout_gap) * y, 0])         rotate([0, 0, 45]) cube([mesh_cutout_size, mesh_cutout_size, mesh_height]);
+        }
+    }
+}
+
+// Start of the small lip that the front end of the mesh
+// wraps around.
+lip_depth = 77.9;
+lip_clamp_thickness = 1;
+lip_height = 1.2;
+mesh_depth = lip_depth + lip_clamp_thickness;
+mesh_height = 6 + ridge_clamp_height;
 mesh_thickness = 3;
 module mesh() {
     intersection() { 
-        translate([0, 0, -1]) rotate([6, 0, 0]) cube([width, mesh_depth * 3, mesh_thickness]);
+        translate([0, 0, -1]) rotate([7, 0, 0]) {
+            cube([width, mesh_depth * 3, mesh_thickness]);
+            translate([0, 0.4, 2]) rotate([-4, 0, 0]) cube([width, ridge_clamp_depth, 6]);
+        }
         difference() {
             cube([width, mesh_depth, mesh_height]);
-            translate([width/4, mesh_depth*0.3, 0]) cube([width/2, mesh_depth/2, mesh_height]);
+            translate([width/3, mesh_depth*0.33, 0]) {
+                mesh_cutouts();
+            }
         }
     };
+    translate([0, lip_depth, mesh_height-4]) cube([width, lip_clamp_thickness, 4+lip_height]);
 }
 
 translate([0, 0, mesh_height - ridge_clamp_height]) {
