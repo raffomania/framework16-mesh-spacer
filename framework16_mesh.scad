@@ -27,12 +27,12 @@ module big_back_clamp() {
 // ridge at the bottom of the laptop.
 
 // Dimensions of the ridge on the laptop.
-ridge_upper_depth = 5.026;
+ridge_upper_depth = 4.526;
 ridge_lower_depth = 4;
 
 // add 0.6 to compensate for reduced back gap
-ridge_height = 4.503 + 0.6;
-ridge_y_start = 17;
+ridge_height = 5.103;
+ridge_y_start = 17.5;
 ridge_clamp_depth = 23.739;
 ridge_clamp_height = ridge_height + clamp_thickness;
 
